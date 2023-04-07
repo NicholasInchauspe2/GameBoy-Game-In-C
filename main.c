@@ -118,7 +118,7 @@ set_sprite_tile(0, 0);
                 playerDirY=0;
                 break;
             case J_DOWN:
-            if(playerY<135)
+/*             if(playerY<135) */
                 ++playerY;
                 playerDirY=1;   
                 break;
@@ -140,15 +140,18 @@ set_sprite_tile(0, 0);
        if(oldPlayerY<playerY){scrollY=-1; oldPlayerY=playerY; }
        if(oldPlayerY>playerY){scrollY=1; oldPlayerY=playerY;  }
 
-       if(playerY>=72-!oldPlayerY && playerY<135+playerY){
+       if(playerY>=72-!oldPlayerY){
    /*      moverObjeto(&player, playerX, 14); */
         scroll_bkg(0, -scrollY);
+        moverObjeto(&player, playerX, 72);
        }
        else
        if(playerY<=72-!oldPlayerY && !playerDirY){
         scroll_bkg(0, -scrollY);
+        moverObjeto(&player, playerX, playerY);
+       }else{
+        moverObjeto(&player, playerX, playerY);
        }
-       moverObjeto(&player, playerX, playerY);
 
        if(oldPlayerY==playerY){ scrollY=0; }
 

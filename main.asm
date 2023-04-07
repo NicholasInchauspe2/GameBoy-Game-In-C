@@ -287,7 +287,7 @@ _setUpPlayer::
 ; Function main
 ; ---------------------------------
 _main::
-	add	sp, #-5
+	add	sp, #-3
 ;main.c:53: VBK_REG = (unsigned char)0;
 	xor	a, a
 	ldh	(#0xff4f), a
@@ -394,7 +394,7 @@ _main::
 	or	a, #0x80
 	ldh	(_LCDC_REG + 0), a
 ;main.c:98: while(1){
-00128$:
+00126$:
 ;main.c:99: player.x = playerX;
 	ld	de, #(_player + 4)
 	ld	a, (#_playerX)
@@ -422,7 +422,7 @@ _main::
 	jr	Z, 00107$
 	sub	a, #0x08
 	jr	Z, 00110$
-	jr	00113$
+	jr	00111$
 ;main.c:104: case J_LEFT:
 00101$:
 ;main.c:105: if(playerX>8)
@@ -437,7 +437,7 @@ _main::
 	ld	hl, #_playerDirX
 	ld	(hl), #0x00
 ;main.c:108: break;
-	jr	00113$
+	jr	00111$
 ;main.c:110: case J_RIGHT:
 00104$:
 ;main.c:111: if(playerX<153)
@@ -452,7 +452,7 @@ _main::
 	ld	hl, #_playerDirX
 	ld	(hl), #0x01
 ;main.c:114: break;
-	jr	00113$
+	jr	00111$
 ;main.c:115: case J_UP:
 00107$:
 ;main.c:116: if(playerY>14)
@@ -467,22 +467,17 @@ _main::
 	ld	hl, #_playerDirY
 	ld	(hl), #0x00
 ;main.c:119: break;
-	jr	00113$
+	jr	00111$
 ;main.c:120: case J_DOWN:
 00110$:
-;main.c:121: if(playerY<135)
-	ld	hl, #_playerY
-	ld	a, (hl)
-	sub	a, #0x87
-	jr	NC, 00112$
 ;main.c:122: ++playerY;
+	ld	hl, #_playerY
 	inc	(hl)
-00112$:
 ;main.c:123: playerDirY=1;   
 	ld	hl, #_playerDirY
 	ld	(hl), #0x01
 ;main.c:125: }
-00113$:
+00111$:
 ;main.c:81: move_sprite(0, playerX, playerY);
 	ld	hl, #_playerY
 	ld	c, (hl)
@@ -490,23 +485,23 @@ _main::
 	ld	a, (#_oldPlayerY)
 	ld	hl, #_playerY
 	sub	a, (hl)
-	jr	NC, 00115$
+	jr	NC, 00113$
 	ld	hl, #_scrollY
 	ld	(hl), #0xff
 	ld	hl, #_oldPlayerY
 	ld	(hl), c
-00115$:
+00113$:
 ;main.c:141: if(oldPlayerY>playerY){scrollY=1; oldPlayerY=playerY;  }
 	ld	a, (#_playerY)
 	ld	hl, #_oldPlayerY
 	sub	a, (hl)
-	jr	NC, 00117$
+	jr	NC, 00115$
 	ld	hl, #_scrollY
 	ld	(hl), #0x01
 	ld	hl, #_oldPlayerY
 	ld	(hl), c
-00117$:
-;main.c:143: if(playerY>=72-!oldPlayerY && playerY<135+playerY){
+00115$:
+;main.c:143: if(playerY>=72-!oldPlayerY){
 	ld	a, (#_oldPlayerY)
 	sub	a,#0x01
 	ld	a, #0x00
@@ -528,7 +523,7 @@ _main::
 	ld	hl, #_scrollY
 	sub	a, (hl)
 	ldhl	sp,	#2
-;main.c:143: if(playerY>=72-!oldPlayerY && playerY<135+playerY){
+;main.c:143: if(playerY>=72-!oldPlayerY){
 	ld	(hl-), a
 	dec	hl
 	ld	a, (hl+)
@@ -538,53 +533,17 @@ _main::
 	ld	d, (hl)
 	ld	a, b
 	bit	7,a
-	jr	Z, 00221$
+	jr	Z, 00209$
 	bit	7, d
-	jr	NZ, 00222$
+	jr	NZ, 00210$
 	cp	a, a
-	jr	00222$
-00221$:
+	jr	00210$
+00209$:
 	bit	7, d
-	jr	Z, 00222$
+	jr	Z, 00210$
 	scf
-00222$:
-	jr	C, 00122$
-	pop	de
-	push	de
-	ld	hl, #0x0087
-	add	hl, de
-	push	hl
-	ld	a, l
-	ldhl	sp,	#5
-	ld	(hl), a
-	pop	hl
-	ld	a, h
-	ldhl	sp,	#4
-	ld	(hl), a
-	ldhl	sp,	#0
-	ld	e, l
-	ld	d, h
-	ldhl	sp,	#3
-	ld	a, (de)
-	inc	de
-	sub	a, (hl)
-	inc	hl
-	ld	a, (de)
-	sbc	a, (hl)
-	ld	a, (de)
-	ld	d, a
-	bit	7, (hl)
-	jr	Z, 00223$
-	bit	7, d
-	jr	NZ, 00224$
-	cp	a, a
-	jr	00224$
-00223$:
-	bit	7, d
-	jr	Z, 00224$
-	scf
-00224$:
-	jr	NC, 00122$
+00210$:
+	jr	C, 00121$
 ;main.c:145: scroll_bkg(0, -scrollY);
 	ldhl	sp,	#2
 	ld	c, (hl)
@@ -592,10 +551,16 @@ _main::
 	ldh	a, (_SCY_REG + 0)
 	add	a, c
 	ldh	(_SCY_REG + 0), a
-;main.c:145: scroll_bkg(0, -scrollY);
-	jr	00123$
-00122$:
-;main.c:148: if(playerY<=72-!oldPlayerY && !playerDirY){
+;main.c:146: moverObjeto(&player, playerX, 72);
+	ld	a, #0x48
+	push	af
+	inc	sp
+	ld	a, (#_playerX)
+	ld	de, #_player
+	call	_moverObjeto
+	jr	00122$
+00121$:
+;main.c:149: if(playerY<=72-!oldPlayerY && !playerDirY){
 	ldhl	sp,	#0
 	ld	a, c
 	sub	a, (hl)
@@ -605,29 +570,27 @@ _main::
 	ld	a, b
 	ld	d, a
 	bit	7, (hl)
-	jr	Z, 00225$
+	jr	Z, 00211$
 	bit	7, d
-	jr	NZ, 00226$
+	jr	NZ, 00212$
 	cp	a, a
-	jr	00226$
-00225$:
+	jr	00212$
+00211$:
 	bit	7, d
-	jr	Z, 00226$
+	jr	Z, 00212$
 	scf
-00226$:
-	jr	C, 00123$
+00212$:
+	jr	C, 00117$
 	ld	a, (#_playerDirY)
 	or	a, a
-	jr	NZ, 00123$
-;main.c:149: scroll_bkg(0, -scrollY);
+	jr	NZ, 00117$
+;main.c:150: scroll_bkg(0, -scrollY);
 	ldhl	sp,	#2
 	ld	c, (hl)
 ;./gbdk/include/gb/gb.h:1222: SCX_REG+=x, SCY_REG+=y;
 	ldh	a, (_SCY_REG + 0)
 	add	a, c
 	ldh	(_SCY_REG + 0), a
-;main.c:149: scroll_bkg(0, -scrollY);
-00123$:
 ;main.c:151: moverObjeto(&player, playerX, playerY);
 	ld	a, (#_playerY)
 	push	af
@@ -635,20 +598,30 @@ _main::
 	ld	a, (#_playerX)
 	ld	de, #_player
 	call	_moverObjeto
-;main.c:153: if(oldPlayerY==playerY){ scrollY=0; }
+	jr	00122$
+00117$:
+;main.c:153: moverObjeto(&player, playerX, playerY);
+	ld	a, (#_playerY)
+	push	af
+	inc	sp
+	ld	a, (#_playerX)
+	ld	de, #_player
+	call	_moverObjeto
+00122$:
+;main.c:156: if(oldPlayerY==playerY){ scrollY=0; }
 	ld	a, (#_oldPlayerY)
 	ld	hl, #_playerY
 	sub	a, (hl)
-	jr	NZ, 00126$
+	jr	NZ, 00124$
 	ld	hl, #_scrollY
 	ld	(hl), #0x00
-00126$:
-;main.c:170: delay(10);
+00124$:
+;main.c:173: delay(10);
 	ld	de, #0x000a
 	call	_delay
-	jp	00128$
-;main.c:172: }
-	add	sp, #5
+	jp	00126$
+;main.c:175: }
+	add	sp, #3
 	ret
 	.area _CODE
 	.area _INITIALIZER
