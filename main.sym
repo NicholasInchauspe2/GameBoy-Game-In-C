@@ -12,7 +12,7 @@ Symbol Table
   2 _Fighter                                                       00032E GR
     _LCDC_REG                                                      ****** GX
   2 _NewShipTiles                                                  00034E GR
-    _SCX_REG                                                       ****** GX
+    _SCY_REG                                                       ****** GX
     _WX_REG                                                        ****** GX
     _WY_REG                                                        ****** GX
   2 _WindowMap                                                     000320 GR
@@ -31,11 +31,14 @@ Symbol Table
   0 _main                                                          0000B5 GR
   0 _moverObjeto                                                   000000 GR
   1 _oldPlayerX                                                    000000 GR
-  1 _player                                                        000004 GR
-  1 _playerDir                                                     000003 GR
-  1 _playerX                                                       000001 GR
-  1 _playerY                                                       000002 GR
-  1 _scrollX                                                       00000A GR
+  1 _oldPlayerY                                                    000001 GR
+  1 _player                                                        000006 GR
+  1 _playerDirX                                                    000004 GR
+  1 _playerDirY                                                    000005 GR
+  1 _playerX                                                       000002 GR
+  1 _playerY                                                       000003 GR
+  1 _scrollX                                                       00000C GR
+  1 _scrollY                                                       00000D GR
   0 _setUpPlayer                                                   00007E GR
     _set_bkg_data                                                  ****** GX
     _set_bkg_tiles                                                 ****** GX
@@ -48,8 +51,8 @@ Hexadecimal [24-Bits]
 
 Area Table
 
-   0 _CODE                                      size    2A5   flags    0
-   1 _DATA                                      size      B   flags    0
+   0 _CODE                                      size    2B6   flags    0
+   1 _DATA                                      size      E   flags    0
    2 _INITIALIZED                               size    38E   flags    0
    3 _DABS                                      size      0   flags    8
    4 _HOME                                      size      0   flags    0

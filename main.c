@@ -14,9 +14,9 @@ struct Objeto
     UINT8 x, y;
 };
 
-unsigned char oldPlayerX, playerX, playerY, playerDir;
+unsigned char oldPlayerX, oldPlayerY, playerX, playerY, playerDirX, playerDirY;
 struct Objeto player;
-signed char scrollX;
+signed char scrollX, scrollY;
 
 void moverObjeto(struct Objeto* obj, UINT8 x, UINT8 y)
 {
@@ -54,6 +54,7 @@ void main() {
     playerX=88;
     playerY=16;
     oldPlayerX=playerX;
+    oldPlayerY=playerY;
 
 set_sprite_data(0, 2, Fighter);
 set_sprite_data(2, 4, NewShipTiles);
@@ -103,21 +104,23 @@ set_sprite_tile(0, 0);
             case J_LEFT:
             if(playerX>8)
                 --playerX;
-                playerDir=0;
+                playerDirX=0;
                 break;
 
             case J_RIGHT:
             if(playerX<153)
                 ++playerX;
-                playerDir=1;
+                playerDirX=1;
                 break;
             case J_UP:
              if(playerY>14)
                 --playerY;
+                playerDirY=0;
                 break;
             case J_DOWN:
             if(playerY<135)
                 ++playerY;
+                playerDirY=1;   
                 break;
         }
 /* 
@@ -134,22 +137,35 @@ set_sprite_tile(0, 0);
     if(oldPlayerY>playerY){scrollY=+1; oldPlayerY=playerY;}
     if(oldPlayerY==playerY){scrollY=0;} */
 
+       if(oldPlayerY<playerY){scrollY=-1; oldPlayerY=playerY; }
+       if(oldPlayerY>playerY){scrollY=1; oldPlayerY=playerY;  }
 
+       if(playerY>=72-!oldPlayerY && playerY<135+playerY){
+   /*      moverObjeto(&player, playerX, 14); */
+        scroll_bkg(0, -scrollY);
+       }
+       else
+       if(playerY<=72-!oldPlayerY && !playerDirY){
+        scroll_bkg(0, -scrollY);
+       }
+       moverObjeto(&player, playerX, playerY);
 
-        if(oldPlayerX<playerX){scrollX=-1; oldPlayerX=playerX;}
+       if(oldPlayerY==playerY){ scrollY=0; }
+
+/*        if(oldPlayerX<playerX){scrollX=-1; oldPlayerX=playerX;}
        if(oldPlayerX>playerX){scrollX=1; oldPlayerX=playerX;}
 
-       if(playerX>=80-!playerDir && playerX<256-80+playerDir){
+       if(playerX>=80-!playerDirX && playerX<256-80+playerDirX){
         moverObjeto(&player, 80, playerY);
         scroll_bkg(-scrollX, 0);
        }
        else
-       if(playerX>=256-80+playerDir)
-       moverObjeto(&player, playerX-256-80+playerDir-16, playerY);
+       if(playerX>=256-80+playerDirX)
+       moverObjeto(&player, playerX-256-80+playerDirX-16, playerY);
        else
        moverObjeto(&player, playerX, playerY);
 
-       if(oldPlayerX==playerX){ scrollX=0;} 
+       if(oldPlayerX==playerX){ scrollX=0;}  */
 
         delay(10);
     }
